@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Link from "next/link";
 import { 
   Box,
@@ -18,34 +17,14 @@ import {
   Spinner
 } from "@chakra-ui/react";
 import { RiAddLine, RiRefreshLine } from "react-icons/ri";
-import { useQuery } from "react-query";
 
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
+import { useUsers } from "../../services/hooks/useUsers";
 
 export default function UserList() {
-  const { data, isLoading, isFetching, error, refetch } = useQuery('users', async () => {
-    const response = await fetch('http://localhost:3000/api/users');
-    const data =  await response.json();
-
-    const users = data.users.map(user => {
-      return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: new Date(user.createdAt).toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        })
-      };
-    });
-
-    return users;
-  }, {
-    staleTime: 1000 * 5,
-  });
+  const { data, isLoading, isFetching, error, refetch } = useUsers();
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -67,8 +46,8 @@ export default function UserList() {
             </Heading>
 
             <Flex>
-              <Button size="sm" fontSize="sm" mr="4" colorScheme="whiteAlpha" onClick={refetch} leftIcon={<Icon as={RiRefreshLine} fontSize="16" />}>
-                atualizar
+              <Button type="button" size="sm" fontSize="sm" mr="4" colorScheme="whiteAlpha" onClick={refetch}>
+                <Icon as={RiRefreshLine} fontSize="16" />
               </Button>
               <Link href="/users/create" passHref>
                 <Button as="a" size="sm" fontSize="sm" colorScheme="pink" leftIcon={<Icon as={RiAddLine} fontSize="16" />}>
